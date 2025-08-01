@@ -1,6 +1,7 @@
 {
     "language": "ja",
     "model": "gemini-2.5-pro",
+    "project_overview": "MacアプリであるHammerspoonの設定を管理するプロジェクトです。",
     // 各プロジェクト（各luaファイル）の説明を記載する。
     "project_descriptions": {}
 }

@@ -71,9 +71,17 @@ function triggerTailscale(hs)
     -- iCloudの特定のフォルダを監視する
     local dirpath = os.getenv("HOME") .. "/Library/Mobile Documents/com~apple~CloudDocs/TriggerTailscale"
     local watcher = hs.pathwatcher.new(dirpath, function(files)
-        for _, file in ipairs(files) do
-            hs.notify.new({title="ファイル変更検知", informativeText=file}):send()
-            print("Change: " .. file)
+        for _, file_path in ipairs(files) do
+            local file_name = file_path:match("([^/]+)$") -- フルパスからファイル名を取得
+            if file_name == "on.txt" then
+                hs.notify.new({title="Tailscale トリガー", informativeText="on.txt を検知しました。tailscaled を起動します。"}):send()
+                print("Change: on.txt detected")
+                hs.execute("tailscale up")
+            elseif file_name == "off.txt" then
+                hs.notify.new({title="Tailscale トリガー", informativeText="off.txt を検知しました。tailscaled を停止します。"}):send()
+                print("Change: off.txt detected")
+                hs.execute("tailscale down")
+            end
         end
     end):start()
 end
