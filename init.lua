@@ -1,4 +1,14 @@
 clipboardMenu = hs.menubar.new()
+
+-- メニューバーに表示する「ツールアイコン」を白で定義
+local icon_tool = hs.styledtext.new("\u{F040}", {
+    color = { red=1, green=1, blue=1 },
+    font = { name = "Webdings", size = 16 }
+})
+
+-- メニューバーのアイコンに「ツールアイコン」を設定
+clipboardMenu:setTitle(icon_tool)
+
 clipboardTimer = nil
 lastClipboard = nil
 
@@ -30,7 +40,7 @@ end
 
 function updateClipboardMenu()
     if clipboardTimer then
-        clipboardMenu:setTitle("📋✅")
+        -- clipboardMenu:setTitle("🔨")
         clipboardMenu:setMenu({
             { title = "停止（📋日付変換）", fn = function()
                 stopClipboardWatcher()
@@ -39,7 +49,7 @@ function updateClipboardMenu()
             end }
         })
     else
-        clipboardMenu:setTitle("📋❌")
+        -- clipboardMenu:setTitle("🔨")
         clipboardMenu:setMenu({
             { title = "開始（📋日付変換）", fn = function()
                 startClipboardWatcher()
@@ -51,8 +61,6 @@ function updateClipboardMenu()
 end
 
 updateClipboardMenu()
-
-
 
 -- ロードしたモジュール一覧を表示する
 function showLoadedModules(hs)
