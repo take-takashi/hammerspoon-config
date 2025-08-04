@@ -9,14 +9,14 @@ package.path = currentDir .. "?.lua;" .. package.path
 local MenuManager = require("menu_manager")
 AppMenu = MenuManager:new() -- アイコンは後から各モジュールで設定可能
 
---
+-- クリップボード監視（8桁数字を日付に変換する）
 local ClassClipboardWatcher = require("class_clipboard_watcher"):new()
 
 -- ロード完了後に一度だけメニューを更新（ID=core）
 AppMenu:register("core", {
-    { title = "⚙️リロード", fn = function() hs.reload() end },
-    { title = "⚙️コンソール", fn = function() hs.openConsole() end },
-    { title = "⚙️設定", fn = function() hs.openPreferences() end },
+    { title = "リロード", fn = function() hs.reload() end },
+    { title = "コンソール", fn = function() hs.openConsole() end },
+    { title = "設定", fn = function() hs.openPreferences() end },
 })
 
 -- ロードしたモジュール一覧を表示する
@@ -32,7 +32,6 @@ end
 showLoadedModules(hs)
 
 -- iCloudドライブを監視してtailscaleを起動・停止を行う
-dofile(currentDir .. "trigger-tailscale.lua")
-triggerTailscale(hs)
+local ClassTailscaleTrigger = require("class_tailscale_trigger"):new()
 
 local classSample = require("class_sample"):new()
