@@ -6,30 +6,38 @@ package.path = currentDir .. "?.lua;" .. package.path
 -- print("currentDir = " .. currentDir)
 
 -- ユーティリティ関数をロード
--- 安全なrequire（safe_init関数の提供）
 local utils = require("utils")
 
 -- MenuManagerを初期化し、グローバルにアクセスできるようにする
--- MenuManagerは必須コンポーネントなので、失敗した場合はアラートを出して後続処理を行わない
-local ok, MenuManager = pcall(require, "menu_manager")
-if not ok then
-    hs.alert.show("Fatal: Failed to load MenuManager. Halting init.")
-    return
+local MenuManager = utils.safe_require("menu_manager")
+if MenuManager then
+    AppMenu = MenuManager:new()
 end
-AppMenu = MenuManager:new() -- アイコンは後から各モジュールで設定可能
 
 -- クリップボード監視（8桁数字を日付に変換する）
-utils.safe_init("class_clipboard_watcher")
+local ClassClipboardWatcher = utils.safe_require("class_clipboard_watcher")
+if ClassClipboardWatcher then
+    ClassClipboardWatcher:new()
+end
 
 -- iCloudドライブを監視してtailscaleを起動・停止を行う
-utils.safe_init("class_tailscale_trigger")
+local ClassTailscaleTrigger = utils.safe_require("class_tailscale_trigger")
+if ClassTailscaleTrigger then
+    ClassTailscaleTrigger:new()
+end
 
 -- Sampleモジュールをロード
-utils.safe_init("class_sample")
+local classSample = utils.safe_require("class_sample")
+if classSample then
+    classSample:new()
+end
 
 -- メニューを更新（ID=core）
-AppMenu:register("core", {
-    { title = "リロード", fn = function() hs.reload() end },
-    { title = "コンソール", fn = function() hs.openConsole() end },
-    { title = "設定", fn = function() hs.openPreferences() end }
-})
+if AppMenu then
+    AppMenu:register("core", {
+        { title = "リロード", fn = function() hs.reload() end },
+        { title = "コンソール", fn = function() hs.openConsole() end },
+        { title = "設定", fn = function() hs.openPreferences() end }
+    })
+end
+
