@@ -1,52 +1,51 @@
-clipboardTimer = nil
-lastClipboard = nil
+-- # TODO: クラス化
+local ClassClipboardWatcher = {}
+ClassClipboardWatcher.__index = ClassClipboardWatcher
 
-function startClipboardWatcher()
-    if clipboardTimer then return end
-    lastClipboard = hs.pasteboard.getContents()
-    clipboardTimer = hs.timer.doEvery(2, function()
-        local content = hs.pasteboard.getContents()
-        if content ~= lastClipboard and content:match("^%d%d%d%d%d%d%d%d$") then
-            local y = content:sub(1,4)
-            local m = content:sub(5,6)
-            local d = content:sub(7,8)
-            local formatted = string.format("%s/%s/%s", y, m, d)
-            hs.pasteboard.setContents(formatted)
-            hs.alert(string.format("📋 日付変換: %s", formatted))
-            lastClipboard = formatted
-        elseif content ~= lastClipboard then
-            lastClipboard = content
-        end
+function ClassClipboardWatcher:new(num)
+    -- 一応タイマーのデフォルト値は2.0秒とする
+    self.timer_interval = num or 2.0
+    hs.pasteboard.watcher.interval(self.timer_interval)
+
+    -- watcher
+    self.pasteboardWatcher = hs.pasteboard.watcher.new(function(str)
+        self:callbackBase(str)
     end)
+
+    -- メニューの登録（最初はOFFからスタート）
+    self.AppMenu = require("menu_manager"):new()
+    self:stop()
+
+    return self
 end
 
-function stopClipboardWatcher()
-    if clipboardTimer then
-        clipboardTimer:stop()
-        clipboardTimer = nil
+function ClassClipboardWatcher:start()
+    self.pasteboardWatcher:start()
+
+    -- メニュー更新
+    self.AppMenu:register("clipboard_watcher", {
+        { title = "日付自動変換", fn = self:stop(), checked = true}
+    })
+end
+
+function ClassClipboardWatcher:stop()
+    self.pasteboardWatcher:stop()
+
+    -- メニュー更新
+    self.AppMenu:register("clipboard_watcher", {
+        { title = "日付自動変換", fn = self:start(), checked = false}
+    })
+end
+
+function ClassClipboardWatcher:callbackBase(str)
+    -- コピーされたものが文字列でなければ何もしない
+    if not str then return end
+
+    -- 8桁数字の場合は、日付変換を行う
+    if str:match("^%d%d%d%d%d%d%d%d$") then
+        ClassClipboardWatcher:callbackDateChage(str)
     end
+
 end
 
-function updateClipboardMenu()
-    if clipboardTimer then
-        -- clipboardMenu:setTitle("🔨")
-        clipboardMenu:setMenu({
-            { title = "停止（📋日付変換）", fn = function()
-                stopClipboardWatcher()
-                updateClipboardMenu()
-                hs.alert("📋 日付変換ウォッチャー：停止")
-            end }
-        })
-    else
-        -- clipboardMenu:setTitle("🔨")
-        clipboardMenu:setMenu({
-            { title = "開始（📋日付変換）", fn = function()
-                startClipboardWatcher()
-                updateClipboardMenu()
-                hs.alert("📋 日付変換ウォッチャー：開始")
-            end }
-        })
-    end
-end
-
-updateClipboardMenu()
+return ClassClipboardWatcher

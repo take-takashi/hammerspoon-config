@@ -9,6 +9,9 @@ package.path = currentDir .. "?.lua;" .. package.path
 local MenuManager = require("menu_manager")
 AppMenu = MenuManager:new() -- アイコンは後から各モジュールで設定可能
 
+--
+local ClassClipboardWatcher = require("class_clipboard_watcher"):new()
+
 -- ロード完了後に一度だけメニューを更新（ID=core）
 AppMenu:register("core", {
     { title = "⚙️リロード", fn = function() hs.reload() end },

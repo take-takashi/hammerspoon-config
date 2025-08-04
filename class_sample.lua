@@ -6,7 +6,8 @@ function ClassSample:new()
     local appMenu = require("menu_manager"):new()
 
     appMenu:register("sample_app", {
-        { title = "sample!", fn = function() hs.alert.show("sample!") end }
+        { title = "sample1", fn = function() hs.alert.show("sample!") end },
+        { title = "sample2", fn = function() hs.alert.show("sample2!") end },
     })
 end
 
