@@ -1,8 +1,9 @@
--- # TODO: クラス化
 local ClassClipboardWatcher = {}
 ClassClipboardWatcher.__index = ClassClipboardWatcher
 
 function ClassClipboardWatcher:new(num)
+    -- インスタンス化
+    local self = setmetatable({}, ClassClipboardWatcher)
     -- 一応タイマーのデフォルト値は2.0秒とする
     self.timer_interval = num or 2.0
     hs.pasteboard.watcher.interval(self.timer_interval)
@@ -23,8 +24,9 @@ function ClassClipboardWatcher:start()
     self.pasteboardWatcher:start()
 
     -- メニュー更新
+    hs.alert("✅日付自動変換")
     self.AppMenu:register("clipboard_watcher", {
-        { title = "日付自動変換", fn = self:stop(), checked = true}
+        { title = "日付自動変換", fn = function() self:stop() end, checked = true}
     })
 end
 
@@ -32,8 +34,9 @@ function ClassClipboardWatcher:stop()
     self.pasteboardWatcher:stop()
 
     -- メニュー更新
+    hs.alert("⛔️日付自動変換")
     self.AppMenu:register("clipboard_watcher", {
-        { title = "日付自動変換", fn = self:start(), checked = false}
+        { title = "日付自動変換", fn = function() self:start() end, checked = false}
     })
 end
 
@@ -43,9 +46,22 @@ function ClassClipboardWatcher:callbackBase(str)
 
     -- 8桁数字の場合は、日付変換を行う
     if str:match("^%d%d%d%d%d%d%d%d$") then
-        ClassClipboardWatcher:callbackDateChage(str)
+        self:callbackDateChange(str)
     end
 
+end
+
+function ClassClipboardWatcher:callbackDateChange(str)
+    -- 8桁数字の場合は、「YYYY/MM/DD」形式に変換してコピーし直す
+    if str:match("^%d%d%d%d%d%d%d%d$") then
+        local y = str:sub(1,4)
+        local m = str:sub(5,6)
+        local d = str:sub(7,8)
+        local formatted = string.format("%s/%s/%s", y, m, d)
+        hs.alert(str .. " -> " .. formatted)
+        -- クリップボードに書き込む
+        hs.pasteboard.writeObjects(formatted)
+    end
 end
 
 return ClassClipboardWatcher
