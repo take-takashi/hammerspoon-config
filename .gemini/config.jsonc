@@ -15,12 +15,8 @@
         ]
     },
     "todos": {
-        "*": [
-            "- 各クラスをinit.luaから呼び出す時にpcallでエラーケアを行う。"
-        ],
+        "*": [],
         "trigger-tailscale.lua": [],
-        "menu_manager.lua": [
-            "メニュー項目の追加順を管理したい。"
-        ]
+        "menu_manager.lua": []
     }
 }
