@@ -31,12 +31,13 @@ end
 --
 function ClassTailscaleTrigger:start()
     self.watcher:start()
-    hs.notify.new({title="Tailscale トリガー", informativeText="監視を開始しました。"}):send()
+
+    -- 通知を表示
+    hs.notify.new({title="Tailscale トリガー監視", informativeText="✅監視を開始しました。"}):send()
 
     -- メニュー更新
-    hs.alert("✅Tailscale トリガー")
     self.AppMenu:register("tailscale_trigger", {
-        { title = "Tailscale トリガー", fn = function() self:stop() end, checked = true }
+        { title = "Tailscale トリガー監視", fn = function() self:stop() end, checked = true }
     })
 end
 
@@ -45,10 +46,11 @@ end
 --
 function ClassTailscaleTrigger:stop()
     self.watcher:stop()
-    hs.notify.new({title="Tailscale トリガー", informativeText="監視を停止しました。"}):send()
+
+    -- 通知を表示
+    hs.notify.new({title="Tailscale トリガー", informativeText="⛔️監視を停止しました。"}):send()
 
     -- メニュー更新
-    hs.alert("⛔️Tailscale トリガー")
     self.AppMenu:register("tailscale_trigger", {
         { title = "Tailscale トリガー", fn = function() self:start() end, checked = false }
     })

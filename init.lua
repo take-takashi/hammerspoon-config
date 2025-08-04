@@ -19,19 +19,8 @@ AppMenu:register("core", {
     { title = "設定", fn = function() hs.openPreferences() end },
 })
 
--- ロードしたモジュール一覧を表示する
-function showLoadedModules(hs)
-    print("----- loaded modules begin -----")
-    for k, v in pairs(hs) do
-        if type(v) == "table" then
-            print(k)
-        end
-    end
-    print("----- loaded modules end -----")
-end
-showLoadedModules(hs)
-
 -- iCloudドライブを監視してtailscaleを起動・停止を行う
 local ClassTailscaleTrigger = require("class_tailscale_trigger"):new()
 
+-- Sampleモジュールをロード
 local classSample = require("class_sample"):new()

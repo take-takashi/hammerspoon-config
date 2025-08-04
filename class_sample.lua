@@ -10,11 +10,21 @@ function ClassSample:new()
     self.AppMenu = MenuManager:new()
 
     self.AppMenu:register("sample_app", {
-        { title = "sample1", fn = function() hs.alert.show("sample!") end },
-        { title = "sample2", fn = function() hs.alert.show("sample2!") end },
+        { title = "ロードモジュール確認", fn = function() self:showLoadedModules() end },
+        { title = "sample", fn = function() hs.alert.show("sample!") end },
     })
 
     return self
+end
+
+function ClassSample:showLoadedModules()
+    print("----- loaded modules begin -----")
+    for k, v in pairs(hs) do
+        if type(v) == "table" then
+            print(k)
+        end
+    end
+    print("----- loaded modules end -----")
 end
 
 return ClassSample

@@ -33,8 +33,10 @@ end
 function ClassClipboardWatcher:start()
     self.pasteboardWatcher:start()
 
+    -- 通知を表示
+    hs.notify.new({title="日付自動変換", informativeText="✅監視を開始しました。"}):send()
+
     -- メニュー更新
-    hs.alert("✅日付自動変換")
     self.AppMenu:register("clipboard_watcher", {
         { title = "日付自動変換", fn = function() self:stop() end, checked = true }
     })
@@ -46,8 +48,10 @@ end
 function ClassClipboardWatcher:stop()
     self.pasteboardWatcher:stop()
 
+    -- 通知を表示
+    hs.notify.new({title="日付自動変換", informativeText="⛔️監視を停止しました。"}):send()
+
     -- メニュー更新
-    hs.alert("⛔️日付自動変換")
     self.AppMenu:register("clipboard_watcher", {
         { title = "日付自動変換", fn = function() self:start() end, checked = false }
     })
