@@ -1,3 +1,5 @@
+local MenuManager = require("menu_manager")
+
 local ClassClipboardWatcher = {}
 ClassClipboardWatcher.__index = ClassClipboardWatcher
 
@@ -14,7 +16,7 @@ function ClassClipboardWatcher:new(num)
     end)
 
     -- メニューの登録（最初はOFFからスタート）
-    self.AppMenu = require("menu_manager"):new()
+    self.AppMenu = MenuManager:new()
     self:stop()
 
     return self
