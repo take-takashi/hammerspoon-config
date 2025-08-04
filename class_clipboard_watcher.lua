@@ -15,7 +15,7 @@ function ClassClipboardWatcher:new(num)
     self.timer_interval = num or 2.0
     hs.pasteboard.watcher.interval(self.timer_interval)
 
-    -- watcher
+    -- クリップボード監視ウォッチャーを作成
     self.pasteboardWatcher = hs.pasteboard.watcher.new(function(str)
         self:callbackBase(str)
     end)
@@ -36,7 +36,7 @@ function ClassClipboardWatcher:start()
     -- メニュー更新
     hs.alert("✅日付自動変換")
     self.AppMenu:register("clipboard_watcher", {
-        { title = "日付自動変換", fn = function() self:stop() end, checked = true}
+        { title = "日付自動変換", fn = function() self:stop() end, checked = true }
     })
 end
 
@@ -49,7 +49,7 @@ function ClassClipboardWatcher:stop()
     -- メニュー更新
     hs.alert("⛔️日付自動変換")
     self.AppMenu:register("clipboard_watcher", {
-        { title = "日付自動変換", fn = function() self:start() end, checked = false}
+        { title = "日付自動変換", fn = function() self:start() end, checked = false }
     })
 end
 
