@@ -7,13 +7,20 @@
         "class_clipboard_watcher.lua": [
             "クリップボードの監視を行い、以下のコピー内容に対して以下の変換を行う。",
             "- 8桁数字がコピーされたら「YYYY/MM/DD」形式に変換する。"
+        ],
+        "class_tailscale_trigger.lua": [
+            "特定のiCloudドライブのフォルダを監視する。",
+            "監視フォルダにon.txtが作成されたとき、tailscaleを起動する。",
+            "監視フォルダにoff.txtが作成されたとき、tailscaleを停止する。"
         ]
     },
     "todos": {
-        "trigger-tailscale.lua": [
-            "- クラス化",
-            "- メインメニューに登録（監視ON、OFFの切り替え）",
-            "- dofileからの脱却（requireを使う）"
+        "*": [
+            "- 各クラスをinit.luaから呼び出す時にpcallでエラーケアを行う。"
+        ],
+        "trigger-tailscale.lua": [],
+        "menu_manager.lua": [
+            "メニュー項目の追加順を管理したい。"
         ]
     }
 }
