@@ -15,7 +15,10 @@
         ]
     },
     "todos": {
-        "*": [],
+        "*": [
+            "printではなく、loggerを使いたい。",
+            "Key visualizerを作ってみたい。"
+        ],
         "trigger-tailscale.lua": [],
         "menu_manager.lua": []
     }
