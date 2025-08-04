@@ -1,6 +1,6 @@
 local MenuManager = {}
 MenuManager.__index = MenuManager
-MenuManager._instance = nil  -- インスタンスの保持場所
+MenuManager._instance = nil  -- インスタンスの保持場所（シングルトン用）
 
 --- MenuManagerクラスの生成（シングルトン的に使う）
 -- @param icon styledtext（オプション）menubar に表示するアイコン
