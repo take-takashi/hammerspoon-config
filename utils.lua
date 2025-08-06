@@ -32,4 +32,15 @@ function Utils.safe_init(module_name)
     end
 end
 
+--- pcallをラップして関数を安全に呼び出す
+-- @param func function 呼び出す関数
+-- @param ... any 関数に渡す引数
+-- @return boolean, ... 成功ステータスと、関数の返り値またはエラーメッセージ
+function Utils.safe_call(func, ...)
+    if type(func) ~= "function" then
+        return false, "first argument must be a function"
+    end
+    return pcall(func, ...)
+end
+
 return Utils
