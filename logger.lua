@@ -1,4 +1,4 @@
--- logger.lua
+-- logger.lua (Simplified for debugging)
 
 local Logger = {}
 Logger.__index = Logger
@@ -16,13 +16,24 @@ local levels = {
 -- Default options
 local defaultOptions = {
   level = 'INFO',
-  filePath = nil,
-  maxSize = 1024 * 1024, -- 1MB
-  maxBackups = 5, -- Number of old log files to keep
   format = '{timestamp} [{level}] {name}: {message}',
 }
 
-function Logger.getLogger(name, options)
+-- Helper function to merge tables
+local function merge_tables(base, override)
+    local new_table = {}
+    for k, v in pairs(base) do
+        new_table[k] = v
+    end
+    if override then
+        for k, v in pairs(override) do
+            new_table[k] = v
+        end
+    end
+    return new_table
+end
+
+function Logger:new(name, options)
   if instances[name] then
     return instances[name]
   end
@@ -31,7 +42,7 @@ function Logger.getLogger(name, options)
   setmetatable(newLogger, Logger)
 
   newLogger.name = name
-  newLogger.options = vim.tbl_extend('force', defaultOptions, options or {})
+  newLogger.options = merge_tables(defaultOptions, options or {})
   newLogger.level = levels[newLogger.options.level] or levels.INFO
   newLogger.hsLogger = hs.logger.new(name, 'debug') -- hs.loggerを内部で使用
 
@@ -41,7 +52,7 @@ end
 
 function Logger:log(level, message)
   local requiredLevel = levels[level]
-  if self.level < requiredLevel then
+  if self.level > requiredLevel then
     return
   end
 
@@ -50,7 +61,7 @@ function Logger:log(level, message)
   formattedMessage = formattedMessage:gsub('{timestamp}', timestamp)
   formattedMessage = formattedMessage:gsub('{level}', level)
   formattedMessage = formattedMessage:gsub('{name}', self.name)
-  formattedMessage = formattedMessage:gsub('{message}', message)
+  formattedMessage = formattedMessage:gsub('{message}', tostring(message))
 
   -- Log to Hammerspoon console
   if level == 'ERROR' then
@@ -60,25 +71,8 @@ function Logger:log(level, message)
   elseif level == 'INFO' then
     self.hsLogger.i(formattedMessage)
   elseif level == 'DEV' then
-    -- hs.logger doesn't have a 'dev' level, so we can map it to 'debug'
     self.hsLogger.d(formattedMessage)
   end
-
-  -- Log to file if filePath is configured
-  if self.options.filePath then
-    -- Log rotation
-    local size = hs.fs.attributes(self.options.filePath, 'size')
-    if size and size > self.options.maxSize then
-      local timestamp = os.date('%Y%m%d%H%M%S')
-      local newPath = self.options.filePath:gsub('(.*)(\..*)
-
-    -- Write to file
-    local file = io.open(self.options.filePath, 'a')
-    if file then
-      file:write(formattedMessage .. '\n')
-      file:close()
-    end
-  end
 end
 
 function Logger:info(message)
@@ -97,112 +91,9 @@ function Logger:dev(message)
   self:log('DEV', message)
 end
 
-return Logger
-, '%1-' .. timestamp .. '%2')
-      if newPath == self.options.filePath then -- No extension
-        newPath = self.options.filePath .. '-' .. timestamp
-      end
-      os.rename(self.options.filePath, newPath)
-
-      -- Clean up old backups
-      if self.options.maxBackups > 0 then
-        local dir = hs.fs.dirname(self.options.filePath)
-        local basename = hs.fs.basename(self.options.filePath):gsub('(\..*)
+-- 他のモジュールから呼び出せるように、newメソッドを持つテーブルを返す
+return {
+    new = function(name, options)
+        return Logger:new(name, options)
     end
-
-    -- Write to file
-    local file = io.open(self.options.filePath, 'a')
-    if file then
-      file:write(formattedMessage .. '\n')
-      file:close()
-    end
-  end
-end
-
-function Logger:info(message)
-  self:log('INFO', message)
-end
-
-function Logger:warn(message)
-  self:log('WARN', message)
-end
-
-function Logger:error(message)
-  self:log('ERROR', message)
-end
-
-function Logger:dev(message)
-  self:log('DEV', message)
-end
-
-return Logger
-, '')
-        local ext = hs.fs.basename(self.options.filePath):match('(\..*)
-    end
-
-    -- Write to file
-    local file = io.open(self.options.filePath, 'a')
-    if file then
-      file:write(formattedMessage .. '\n')
-      file:close()
-    end
-  end
-end
-
-function Logger:info(message)
-  self:log('INFO', message)
-end
-
-function Logger:warn(message)
-  self:log('WARN', message)
-end
-
-function Logger:error(message)
-  self:log('ERROR', message)
-end
-
-function Logger:dev(message)
-  self:log('DEV', message)
-end
-
-return Logger
-) or ''
-
-        local pattern = dir .. '/' .. basename .. '-*' .. ext
-        local backups = hs.fs.glob(pattern)
-        
-        if #backups > self.options.maxBackups then
-          table.sort(backups)
-          for i = 1, #backups - self.options.maxBackups do
-            os.remove(backups[i])
-          end
-        end
-      end
-    end
-
-    -- Write to file
-    local file = io.open(self.options.filePath, 'a')
-    if file then
-      file:write(formattedMessage .. '\n')
-      file:close()
-    end
-  end
-end
-
-function Logger:info(message)
-  self:log('INFO', message)
-end
-
-function Logger:warn(message)
-  self:log('WARN', message)
-end
-
-function Logger:error(message)
-  self:log('ERROR', message)
-end
-
-function Logger:dev(message)
-  self:log('DEV', message)
-end
-
-return Logger
+}
