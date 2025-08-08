@@ -43,10 +43,11 @@ end
 --- hs.eventtapの初期化
 function KeyVisualizer:initEventTap()
     log:d("initEventTap")
+    local obj = self
     eventtap = hs.eventtap.new({hs.eventtap.event.types.keyDown}, function(e)
         local chars = e:getCharacters()
         log:d("keyDown: " .. chars)
-        self:showKey(chars)
+        obj:showKey(chars)
     end)
     eventtap:start()
 end

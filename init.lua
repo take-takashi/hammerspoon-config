@@ -32,11 +32,11 @@ if classSample then
     classSample:new()
 end
 
--- KeyVisualizer
-local ClassKeyVisualizer = utils.safe_require("class_key_visualizer")
-if ClassKeyVisualizer then
-    utils.safe_call(function() ClassKeyVisualizer:new() end)
-end
+-- KeyVisualizer（動かないのでお蔵）
+-- local ClassKeyVisualizer = utils.safe_require("class_key_visualizer")
+-- if ClassKeyVisualizer then
+--     utils.safe_call(function() ClassKeyVisualizer:new() end)
+-- end
 
 -- メニューを更新（ID=core）
 if AppMenu then
