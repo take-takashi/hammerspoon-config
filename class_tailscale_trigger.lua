@@ -72,7 +72,9 @@ function ClassTailscaleTrigger:callbackBase(paths, flagTables)
         -- print("----- DEBUG -----")
 
         -- ファイルのイベントを確認（ファイル作成、もしくはiCloud経由でファイル作成（リネーム、改変））
-        if not (event_flags.itemCreated or (event_flags.itemRenamed and event_flags.itemModified)) then
+        -- if not (event_flags.itemCreated or (event_flags.itemRenamed and event_flags.itemModified)) then
+        -- macOS Tahoe 26.0から、iCloudDriveへのファイル配置がitemModifiedが含まれなくなった？ので修正
+        if not (event_flags.itemCreated or event_flags.itemRenamed) then
             goto continue
         end
 
