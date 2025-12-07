@@ -26,6 +26,16 @@ if ClassTailscaleTrigger then
     ClassTailscaleTrigger:new()
 end
 
+-- 選択文字列ショートカットトリガー
+-- なんか思うようにいかなかったのでアーカイブ
+-- local ClassSelectionShortcutTrigger = utils.safe_require("class_selection_shortcut_trigger")
+-- if ClassSelectionShortcutTrigger then
+--    ClassSelectionShortcutTrigger:new({
+--        shortcutName = "テキストを日本語訳して表示",
+--        menuManager = AppMenu
+--    })
+--end
+
 -- Sampleモジュールをロード
 local classSample = utils.safe_require("class_sample")
 if classSample then
